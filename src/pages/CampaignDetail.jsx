@@ -672,4 +672,3 @@ const CampaignDetail = () => {
 };
 
 export default CampaignDetail;
-export default CampaignDetail;

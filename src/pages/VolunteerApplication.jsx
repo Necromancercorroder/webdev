@@ -763,4 +763,3 @@ const VolunteerApplication = () => {
 };
 
 export default VolunteerApplication;
-export default VolunteerApplication;

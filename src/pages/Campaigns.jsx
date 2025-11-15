@@ -102,10 +102,10 @@ const Campaigns = () => {
                   
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">
-                      Raised: <strong>${campaign.raised?.toLocaleString() || 0}</strong>
+                      Raised: <strong>₹{campaign.raised?.toLocaleString() || 0}</strong>
                     </span>
                     <span className="text-gray-600">
-                      Goal: <strong>${campaign.goal?.toLocaleString() || 0}</strong>
+                      Goal: <strong>₹{campaign.goal?.toLocaleString() || 0}</strong>
                     </span>
                   </div>
                 </div>

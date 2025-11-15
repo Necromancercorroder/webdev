@@ -10,12 +10,25 @@ import {
   Mail,
   Phone,
   Award,
-  FileText
+  FileText,
+  Building2,
+  TrendingUp,
+  BarChart3,
+  DollarSign,
+  Shield,
+  AlertTriangle,
+  Eye,
+  Banknote
 } from 'lucide-react';
+import config from '../config';
 
 const PlatformAdminPanel = () => {
   const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('volunteers'); // volunteers, ngos, users, campaigns, financial
   const [applications, setApplications] = useState([]);
+  const [ngoRegistrations, setNgoRegistrations] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [allCampaigns, setAllCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
   const [stats, setStats] = useState({
@@ -32,7 +45,7 @@ const PlatformAdminPanel = () => {
   const fetchApplications = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/volunteer-applications', {
+      const response = await fetch(`${config.API_URL}/api/volunteer-applications`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -62,7 +75,7 @@ const PlatformAdminPanel = () => {
   const handleApplicationAction = async (applicationId, action) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/volunteer-applications/${applicationId}`, {
+      const response = await fetch(`${config.API_URL}/api/volunteer-applications/${applicationId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -101,12 +114,76 @@ const PlatformAdminPanel = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Volunteer Management Panel</h1>
-          <p className="text-gray-600">Head Volunteer - Manage all volunteer applications and role assignments</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Platform Administration</h1>
+          <p className="text-gray-600">Manage users, campaigns, NGO registrations, and financial oversight</p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-lg shadow mb-6">
+          <nav className="flex border-b border-gray-200 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('volunteers')}
+              className={`flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap ${
+                activeTab === 'volunteers'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <UserCheck className="w-5 h-5" />
+              Volunteer Applications
+            </button>
+            <button
+              onClick={() => setActiveTab('ngos')}
+              className={`flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap ${
+                activeTab === 'ngos'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Building2 className="w-5 h-5" />
+              NGO Registrations
+            </button>
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap ${
+                activeTab === 'users'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Users className="w-5 h-5" />
+              All Users
+            </button>
+            <button
+              onClick={() => setActiveTab('campaigns')}
+              className={`flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap ${
+                activeTab === 'campaigns'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <TrendingUp className="w-5 h-5" />
+              Campaign Moderation
+            </button>
+            <button
+              onClick={() => setActiveTab('financial')}
+              className={`flex items-center gap-2 px-6 py-4 text-sm font-medium whitespace-nowrap ${
+                activeTab === 'financial'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <Banknote className="w-5 h-5" />
+              Financial Reports
+            </button>
+          </nav>
+        </div>
+
+        {/* Volunteer Applications Tab */}
+        {activeTab === 'volunteers' && (
+          <>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -302,6 +379,40 @@ const PlatformAdminPanel = () => {
             </div>
           )}
         </div>
+          </>
+        )}
+
+        {/* NGO Registrations Tab */}
+        {activeTab === 'ngos' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">NGO Registration Approval</h2>
+            <p className="text-gray-600">This feature allows platform admins to review and approve NGO registrations. Integration with volunteer review system coming soon.</p>
+          </div>
+        )}
+
+        {/* Users Management Tab */}
+        {activeTab === 'users' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">User Management</h2>
+            <p className="text-gray-600">View and manage all platform users - donors, volunteers, NGOs, and admins.</p>
+          </div>
+        )}
+
+        {/* Campaign Moderation Tab */}
+        {activeTab === 'campaigns' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Campaign Moderation</h2>
+            <p className="text-gray-600">Monitor and moderate campaigns, flag suspicious activities, and ensure compliance.</p>
+          </div>
+        )}
+
+        {/* Financial Reports Tab */}
+        {activeTab === 'financial' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Financial Oversight</h2>
+            <p className="text-gray-600">View platform-wide financial reports, donation tracking, and transaction analytics.</p>
+          </div>
+        )}
       </div>
     </div>
   );

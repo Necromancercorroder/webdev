@@ -43,15 +43,15 @@ const Footer = () => {
             <ul className="space-y-2">
               <li className="flex items-center text-gray-400 text-sm">
                 <Mail className="w-4 h-4 mr-2" />
-                contact@socialimpact.org
+                contact@socialimpact.in
               </li>
               <li className="flex items-center text-gray-400 text-sm">
                 <Phone className="w-4 h-4 mr-2" />
-                +1 (555) 123-4567
+                +91 98765 43210
               </li>
               <li className="flex items-center text-gray-400 text-sm">
                 <MapPin className="w-4 h-4 mr-2" />
-                123 Impact Street, City
+                123 Social Impact Road, Mumbai, Maharashtra 400001, India
               </li>
             </ul>
           </div>

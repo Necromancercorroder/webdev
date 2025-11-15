@@ -75,7 +75,7 @@ function AppContent() {
             }
           />
           <Route
-            path="/volunteer-application"
+            path="/volunteer-application/*"
             element={
               <ProtectedRoute>
                 <VolunteerApplication />

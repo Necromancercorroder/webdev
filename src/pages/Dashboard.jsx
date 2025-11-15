@@ -31,7 +31,7 @@ const Dashboard = () => {
                   {user?.userType === 'volunteer' && 'Hours Volunteered'}
                 </p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {user?.userType === 'donor' ? '$0' : '0'}
+                  {user?.userType === 'donor' ? '₹0' : '0'}
                 </p>
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
@@ -49,7 +49,7 @@ const Dashboard = () => {
                   {user?.userType === 'volunteer' && 'Campaigns Joined'}
                 </p>
                 <p className="text-3xl font-bold text-gray-900">
-                  {user?.userType === 'ngo' ? '$0' : '0'}
+                  {user?.userType === 'ngo' ? '₹0' : '0'}
                 </p>
               </div>
               <div className="p-3 bg-green-100 rounded-full">

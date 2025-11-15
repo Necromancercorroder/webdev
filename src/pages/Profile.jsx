@@ -109,7 +109,7 @@ const Profile = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+91 98765 43210"
                 />
               </div>
 

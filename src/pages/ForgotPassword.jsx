@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
+import config from '../config';
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1); // 1: email, 2: code & new password
@@ -19,7 +20,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
+      const response = await fetch(`${config.API_URL}/api/auth/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +61,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/reset-password', {
+      const response = await fetch(`${config.API_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -249,4 +250,5 @@ const ForgotPassword = () => {
   );
 };
 
+export default ForgotPassword;
 export default ForgotPassword;

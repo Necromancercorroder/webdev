@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useCampaigns } from '../contexts/CampaignContext';
 import { useAuth } from '../contexts/AuthContext';
-import { ArrowLeft, MapPin, Calendar, Target, TrendingUp, Heart, Users, DollarSign, Download } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Target, TrendingUp, Heart, Users, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
+import config from '../config';
 
 const CampaignDetail = () => {
   const { id } = useParams();
@@ -37,7 +38,7 @@ const CampaignDetail = () => {
 
   const loadDonations = async (campaignId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/donations?campaignId=${campaignId}`);
+      const response = await fetch(`${config.API_URL}/api/donations?campaignId=${campaignId}`);
       const data = await response.json();
       if (data.success) {
         setDonations(data.donations);
@@ -49,7 +50,7 @@ const CampaignDetail = () => {
 
   const loadVolunteers = async (campaignId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/volunteers?campaignId=${campaignId}`);
+      const response = await fetch(`${config.API_URL}/api/volunteers?campaignId=${campaignId}`);
       const data = await response.json();
       if (data.success) {
         setVolunteers(data.volunteers);
@@ -87,7 +88,7 @@ const CampaignDetail = () => {
     const transactionId = `TXN${Date.now()}${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
     try {
-      const response = await fetch('http://localhost:5000/api/donations', {
+      const response = await fetch(`${config.API_URL}/api/donations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +117,6 @@ const CampaignDetail = () => {
           date: new Date().toLocaleString()
         });
 
-        // Update campaign raised amount
         const updatedRaised = (campaign.raised || 0) + amount;
         setCampaign({ ...campaign, raised: updatedRaised });
         setDonationAmount('');
@@ -211,14 +211,14 @@ const CampaignDetail = () => {
     doc.text('Amount Donated:', 20, y);
     doc.setTextColor(37, 99, 235);
     doc.setFontSize(20);
-    doc.text(`$${data.amount.toFixed(2)}`, 150, y);
+    doc.text(`₹${data.amount.toFixed(2)}`, 150, y);
     
     // Footer
     doc.setTextColor(100, 100, 100);
     doc.setFontSize(9);
     doc.text('Thank you for your generous contribution!', 105, 270, { align: 'center' });
     doc.text('This receipt serves as proof of your donation.', 105, 275, { align: 'center' });
-    doc.text('For queries, contact: support@socialimpact.org', 105, 280, { align: 'center' });
+    doc.text('For queries, contact: support@socialimpact.in', 105, 280, { align: 'center' });
     
     // Save PDF
     doc.save(`Receipt_${data.transactionId}.pdf`);
@@ -231,7 +231,7 @@ const CampaignDetail = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/volunteers', {
+      const response = await fetch(`${config.API_URL}/api/volunteers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -335,42 +335,44 @@ const CampaignDetail = () => {
               </div>
               <div className="flex justify-between mt-2">
                 <span className="text-lg font-bold text-gray-900">
-                  ${(campaign.raised || 0).toLocaleString()} raised
+                  ₹{(campaign.raised || 0).toLocaleString()} raised
                 </span>
                 <span className="text-gray-600">
-                  of ${campaign.goal.toLocaleString()} goal
+                  of ₹{campaign.goal.toLocaleString()} goal
                 </span>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-4 mb-8">
-              {!showDonateForm ? (
+            {/* Action Buttons - Hidden for NGO users */}
+            {user?.userType !== 'ngo' && (
+              <div className="flex gap-4 mb-8">
+                {!showDonateForm ? (
+                  <button
+                    onClick={() => setShowDonateForm(true)}
+                    className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 font-semibold flex items-center justify-center"
+                  >
+                    <Heart className="w-5 h-5 mr-2" />
+                    Donate Now
+                  </button>
+                ) : null}
                 <button
-                  onClick={() => setShowDonateForm(true)}
-                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 font-semibold flex items-center justify-center"
+                  onClick={() => navigate('/volunteer-application')}
+                  className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 font-semibold flex items-center justify-center"
                 >
-                  <Heart className="w-5 h-5 mr-2" />
-                  Donate Now
+                  <Users className="w-5 h-5 mr-2" />
+                  Apply as Volunteer
                 </button>
-              ) : null}
-              <button
-                onClick={() => navigate('/volunteer-application')}
-                className="flex-1 bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 font-semibold flex items-center justify-center"
-              >
-                <Users className="w-5 h-5 mr-2" />
-                Apply as Volunteer
-              </button>
-            </div>
+              </div>
+            )}
 
-            {/* Donation Form */}
-            {showDonateForm && (
+            {/* Donation Form - Hidden for NGO users */}
+            {showDonateForm && user?.userType !== 'ngo' && (
               <form onSubmit={handleDonate} className="bg-blue-50 p-6 rounded-lg mb-8">
                 <h3 className="text-xl font-bold mb-4">Make a Donation</h3>
                 <div className="flex gap-4">
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Donation Amount ($)
+                      Donation Amount (₹)
                     </label>
                     <input
                       type="number"
@@ -419,7 +421,7 @@ const CampaignDetail = () => {
                 <p className="text-3xl font-bold text-gray-900">{donations.length}</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
-                <DollarSign className="w-8 h-8 text-blue-600" />
+                <Heart className="w-8 h-8 text-blue-600" />
               </div>
             </div>
           </div>
@@ -441,7 +443,7 @@ const CampaignDetail = () => {
               <div>
                 <p className="text-sm text-gray-600 mb-1">Remaining</p>
                 <p className="text-3xl font-bold text-gray-900">
-                  ${Math.max(0, campaign.goal - (campaign.raised || 0)).toLocaleString()}
+                  ₹{Math.max(0, campaign.goal - (campaign.raised || 0)).toLocaleString()}
                 </p>
               </div>
               <div className="p-3 bg-purple-100 rounded-full">
@@ -470,7 +472,7 @@ const CampaignDetail = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-green-600">${donation.amount.toLocaleString()}</p>
+                    <p className="font-bold text-green-600">₹{donation.amount.toLocaleString()}</p>
                     {donation.message && (
                       <p className="text-sm text-gray-500 italic">"{donation.message}"</p>
                     )}
@@ -532,7 +534,7 @@ const CampaignDetail = () => {
               <div className="bg-blue-50 p-4 rounded-lg mb-6">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-700 font-medium">Donation Amount:</span>
-                  <span className="text-3xl font-bold text-blue-600">${donationAmount}</span>
+                  <span className="text-3xl font-bold text-blue-600">₹{donationAmount}</span>
                 </div>
               </div>
 
@@ -669,4 +671,5 @@ const CampaignDetail = () => {
   );
 };
 
+export default CampaignDetail;
 export default CampaignDetail;

@@ -10,6 +10,24 @@ const CreateCampaign = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Only NGOs can create campaigns
+  if (!user || user.userType !== 'ngo') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
+          <p className="text-gray-600 mb-4">Only NGOs can create campaigns.</p>
+          <button
+            onClick={() => navigate('/campaigns')}
+            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700"
+          >
+            Browse Campaigns
+          </button>
+        </div>
+      </div>
+    );
+  }
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -142,7 +160,7 @@ const CreateCampaign = () => {
 
               <div>
                 <label htmlFor="goal" className="block text-sm font-medium text-gray-700 mb-2">
-                  Funding Goal ($) *
+                  Funding Goal (₹) *
                 </label>
                 <input
                   type="number"
@@ -169,7 +187,7 @@ const CreateCampaign = () => {
                 value={formData.location}
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                placeholder="e.g., New York, USA"
+                placeholder="e.g., Mumbai, Maharashtra, India"
               />
             </div>
 

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import config from '../config';
 
 const CampaignContext = createContext(null);
 
@@ -16,8 +17,7 @@ export const CampaignProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const { token } = useAuth();
 
-  // Demo campaigns
-  const demoCampaigns = [
+  const defaultCampaigns = [
     {
       id: 'demo1',
       title: 'Clean Water for Rural Villages',
@@ -82,21 +82,18 @@ export const CampaignProvider = ({ children }) => {
 
   const fetchCampaigns = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/campaigns');
+      const response = await fetch(`${config.API_URL}/api/campaigns`);
       const data = await response.json();
       
       if (data.success) {
-        // Combine demo campaigns with real campaigns
-        const allCampaigns = [...demoCampaigns, ...data.campaigns];
+        const allCampaigns = [...defaultCampaigns, ...data.campaigns];
         setCampaigns(allCampaigns);
       } else {
-        // If API fails, just use demo campaigns
-        setCampaigns(demoCampaigns);
+        setCampaigns(defaultCampaigns);
       }
     } catch (error) {
       console.error('Error fetching campaigns:', error);
-      // Fallback to demo campaigns
-      setCampaigns(demoCampaigns);
+      setCampaigns(defaultCampaigns);
     } finally {
       setLoading(false);
     }
@@ -108,14 +105,12 @@ export const CampaignProvider = ({ children }) => {
 
   const getCampaignById = async (id) => {
     try {
-      // First check if it's a demo campaign
-      const demoCampaign = demoCampaigns.find(c => c.id === id);
-      if (demoCampaign) {
-        return { success: true, campaign: demoCampaign };
+      const defaultCampaign = defaultCampaigns.find(c => c.id === id);
+      if (defaultCampaign) {
+        return { success: true, campaign: defaultCampaign };
       }
 
-      // Otherwise fetch from backend
-      const response = await fetch(`http://localhost:5000/api/campaigns/${id}`);
+      const response = await fetch(`${config.API_URL}/api/campaigns/${id}`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -126,7 +121,7 @@ export const CampaignProvider = ({ children }) => {
 
   const createCampaign = async (campaignData) => {
     try {
-      const response = await fetch('http://localhost:5000/api/campaigns', {
+      const response = await fetch(`${config.API_URL}/api/campaigns`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -149,7 +144,7 @@ export const CampaignProvider = ({ children }) => {
 
   const updateCampaign = async (id, updates) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/campaigns/${id}`, {
+      const response = await fetch(`${config.API_URL}/api/campaigns/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

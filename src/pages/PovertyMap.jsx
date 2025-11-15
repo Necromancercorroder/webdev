@@ -4,13 +4,12 @@ import { MapPin, TrendingDown, Users, DollarSign } from 'lucide-react';
 const PovertyMap = () => {
   const [selectedState, setSelectedState] = useState(null);
 
-  // Poverty rate data for Indian states (sample data - replace with real data)
   const povertyData = {
     'Andhra Pradesh': { rate: 9.2, population: 53903393, poor: 4959112 },
     'Arunachal Pradesh': { rate: 34.7, population: 1570458, poor: 544949 },
     'Assam': { rate: 31.9, population: 35607039, poor: 11358646 },
     'Bihar': { rate: 33.7, population: 124799926, poor: 42057575 },
-    'Chhattisgarh': { rate: 39.9, population: 29436231, population: 11747048 },
+    'Chhattisgarh': { rate: 39.9, population: 29436231, poor: 11747048 },
     'Goa': { rate: 5.1, population: 1542750, poor: 78680 },
     'Gujarat': { rate: 16.6, population: 63872399, poor: 10602878 },
     'Haryana': { rate: 11.2, population: 28204692, poor: 3158926 },

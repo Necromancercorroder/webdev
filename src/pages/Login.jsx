@@ -68,7 +68,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="you@example.com"
+                  placeholder="rahul@example.com"
                 />
               </div>
             </div>
@@ -127,7 +127,7 @@ const Login = () => {
 
             <div className="mt-4 text-sm text-gray-600 bg-gray-50 p-4 rounded-md">
               <p className="font-medium mb-2">For testing purposes:</p>
-              <p>Email: demo@example.com</p>
+              <p>Email: demo@socialimpact.in</p>
               <p>Password: password123</p>
             </div>
           </div>

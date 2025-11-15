@@ -52,8 +52,8 @@ const Contact = () => {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-semibold mb-1">Email</h3>
-                  <p className="text-gray-600">contact@socialimpact.org</p>
-                  <p className="text-gray-600">support@socialimpact.org</p>
+                  <p className="text-gray-600">contact@socialimpact.in</p>
+                  <p className="text-gray-600">support@socialimpact.in</p>
                 </div>
               </div>
 
@@ -65,8 +65,8 @@ const Contact = () => {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-semibold mb-1">Phone</h3>
-                  <p className="text-gray-600">+1 (555) 123-4567</p>
-                  <p className="text-gray-600">Mon-Fri, 9am-6pm EST</p>
+                  <p className="text-gray-600">+91 98765 43210</p>
+                  <p className="text-gray-600">Mon-Fri, 9am-6pm IST</p>
                 </div>
               </div>
 
@@ -78,8 +78,8 @@ const Contact = () => {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-semibold mb-1">Office</h3>
-                  <p className="text-gray-600">123 Impact Street</p>
-                  <p className="text-gray-600">New York, NY 10001</p>
+                  <p className="text-gray-600">123 Social Impact Road</p>
+                  <p className="text-gray-600">Mumbai, Maharashtra 400001, India</p>
                 </div>
               </div>
             </div>
@@ -115,7 +115,7 @@ const Contact = () => {
                   value={formData.name}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="John Doe"
+                  placeholder="Rahul Kumar"
                 />
               </div>
 
@@ -131,7 +131,7 @@ const Contact = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="john@example.com"
+                  placeholder="rahul@example.com"
                 />
               </div>
 

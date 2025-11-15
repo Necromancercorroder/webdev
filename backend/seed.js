@@ -2,13 +2,11 @@ const db = require('./database');
 
 const seedData = async () => {
   try {
-    console.log('🌱 Starting to seed database with sample data...');
+    console.log('🌱 Initializing database...');
 
-    // Connect to database
     await db.connect();
 
-    // Sample campaigns data
-    const sampleCampaigns = [
+    const campaignData = [
       {
         title: "Clean Water for Rural Communities",
         description: "Providing clean drinking water to 5 rural communities in need. This project will install water purification systems and train local volunteers for maintenance.",
@@ -82,9 +80,8 @@ const seedData = async () => {
       }
     ];
 
-    // Add campaigns to database
     const campaignIds = [];
-    for (const campaign of sampleCampaigns) {
+    for (const campaign of campaignData) {
       const result = await db.addCampaign(campaign);
       if (result.success) {
         campaignIds.push(result.id);
@@ -94,74 +91,201 @@ const seedData = async () => {
       }
     }
 
-    // Sample donations data
-    const sampleDonations = [
+    const donationData = [
       {
         campaignId: campaignIds[0] || "campaign-1",
-        donorId: "donor-1",
+        userId: "user-1",
+        userName: "Rajesh Kumar",
         amount: 5000,
-        donorName: "Anonymous Donor",
+        paymentMethod: "upi",
+        transactionId: "TXN001",
         message: "Keep up the great work!",
-        status: "completed"
+        paymentStatus: "COMPLETED"
       },
       {
         campaignId: campaignIds[0] || "campaign-1",
-        donorId: "donor-2",
+        userId: "user-2",
+        userName: "Priya Sharma",
         amount: 2500,
-        donorName: "John Smith",
+        paymentMethod: "card",
+        transactionId: "TXN002",
         message: "Hope this helps the community",
-        status: "completed"
+        paymentStatus: "COMPLETED"
+      },
+      {
+        campaignId: campaignIds[0] || "campaign-1",
+        userId: "user-3",
+        userName: "Amit Patel",
+        amount: 10000,
+        paymentMethod: "bank",
+        transactionId: "TXN003",
+        message: "Great cause!",
+        paymentStatus: "COMPLETED"
+      },
+      {
+        campaignId: campaignIds[0] || "campaign-1",
+        userId: "user-4",
+        userName: "Sneha Reddy",
+        amount: 7500,
+        paymentMethod: "upi",
+        transactionId: "TXN004",
+        message: "Happy to contribute",
+        paymentStatus: "COMPLETED"
       },
       {
         campaignId: campaignIds[1] || "campaign-2",
-        donorId: "donor-3",
-        amount: 10000,
-        donorName: "Sarah Johnson",
+        userId: "user-5",
+        userName: "Vikram Singh",
+        amount: 8000,
+        paymentMethod: "card",
+        transactionId: "TXN005",
         message: "Education is the key to a better future",
-        status: "completed"
+        paymentStatus: "COMPLETED"
+      },
+      {
+        campaignId: campaignIds[1] || "campaign-2",
+        userId: "user-6",
+        userName: "Anjali Gupta",
+        amount: 3500,
+        paymentMethod: "upi",
+        transactionId: "TXN006",
+        message: "Supporting education",
+        paymentStatus: "COMPLETED"
+      },
+      {
+        campaignId: campaignIds[1] || "campaign-2",
+        userId: "user-7",
+        userName: "Rahul Verma",
+        amount: 12000,
+        paymentMethod: "paypal",
+        transactionId: "TXN007",
+        message: "Every child deserves education",
+        paymentStatus: "COMPLETED"
+      },
+      {
+        campaignId: campaignIds[2] || "campaign-3",
+        userId: "user-8",
+        userName: "Meera Iyer",
+        amount: 15000,
+        paymentMethod: "bank",
+        transactionId: "TXN008",
+        message: "Stay strong!",
+        paymentStatus: "COMPLETED"
+      },
+      {
+        campaignId: campaignIds[2] || "campaign-3",
+        userId: "user-9",
+        userName: "Karthik Nair",
+        amount: 20000,
+        paymentMethod: "card",
+        transactionId: "TXN009",
+        message: "For disaster relief",
+        paymentStatus: "COMPLETED"
       }
     ];
 
-    // Add donations to database
-    for (const donation of sampleDonations) {
+    for (const donation of donationData) {
       const result = await db.addDonation(donation);
       if (result.success) {
-        console.log(`✅ Added donation: ${donation.donorName} - $${donation.amount}`);
+        console.log(`✅ Added donation: ${donation.userName} - ₹${donation.amount}`);
       } else {
-        console.error(`❌ Failed to add donation: ${donation.donorName}`, result.error);
+        console.error(`❌ Failed to add donation: ${donation.userName}`, result.error);
       }
     }
 
-    // Sample volunteers data
-    const sampleVolunteers = [
+    const volunteerData = [
       {
         campaignId: campaignIds[0] || "campaign-1",
-        volunteerId: "vol-1",
-        volunteerName: "Mike Wilson",
+        userId: "vol-1",
+        userName: "Arjun Kapoor",
+        email: "arjun@example.com",
+        phone: "+91-9876543210",
         skills: ["Water systems", "Community outreach"],
-        status: "active"
+        availability: "Weekends",
+        status: "approved"
+      },
+      {
+        campaignId: campaignIds[0] || "campaign-1",
+        userId: "vol-2",
+        userName: "Divya Menon",
+        email: "divya@example.com",
+        phone: "+91-9876543211",
+        skills: ["Engineering", "Project management"],
+        availability: "Full-time",
+        status: "approved"
+      },
+      {
+        campaignId: campaignIds[0] || "campaign-1",
+        userId: "vol-3",
+        userName: "Sanjay Desai",
+        email: "sanjay@example.com",
+        phone: "+91-9876543212",
+        skills: ["Construction", "Maintenance"],
+        availability: "Weekends",
+        status: "approved"
       },
       {
         campaignId: campaignIds[1] || "campaign-2",
-        volunteerId: "vol-2",
-        volunteerName: "Lisa Brown",
+        userId: "vol-4",
+        userName: "Kavya Krishnan",
+        email: "kavya@example.com",
+        phone: "+91-9876543213",
         skills: ["Teaching", "Child development"],
-        status: "active"
+        availability: "Evenings",
+        status: "approved"
+      },
+      {
+        campaignId: campaignIds[1] || "campaign-2",
+        userId: "vol-5",
+        userName: "Rohan Joshi",
+        email: "rohan@example.com",
+        phone: "+91-9876543214",
+        skills: ["Mathematics", "Science teaching"],
+        availability: "Weekdays",
+        status: "approved"
+      },
+      {
+        campaignId: campaignIds[1] || "campaign-2",
+        userId: "vol-6",
+        userName: "Pooja Bhat",
+        email: "pooja@example.com",
+        phone: "+91-9876543215",
+        skills: ["Arts & Crafts", "Creative teaching"],
+        availability: "Weekends",
+        status: "approved"
+      },
+      {
+        campaignId: campaignIds[2] || "campaign-3",
+        userId: "vol-7",
+        userName: "Aditya Rao",
+        email: "aditya@example.com",
+        phone: "+91-9876543216",
+        skills: ["Emergency response", "First aid"],
+        availability: "Full-time",
+        status: "approved"
+      },
+      {
+        campaignId: campaignIds[2] || "campaign-3",
+        userId: "vol-8",
+        userName: "Nisha Pillai",
+        email: "nisha@example.com",
+        phone: "+91-9876543217",
+        skills: ["Medical assistance", "Nursing"],
+        availability: "Full-time",
+        status: "approved"
       }
     ];
 
-    // Add volunteers to database
-    for (const volunteer of sampleVolunteers) {
+    for (const volunteer of volunteerData) {
       const result = await db.addVolunteer(volunteer);
       if (result.success) {
-        console.log(`✅ Added volunteer: ${volunteer.volunteerName}`);
+        console.log(`✅ Added volunteer: ${volunteer.userName}`);
       } else {
-        console.error(`❌ Failed to add volunteer: ${volunteer.volunteerName}`, result.error);
+        console.error(`❌ Failed to add volunteer: ${volunteer.userName}`, result.error);
       }
     }
 
-    // Sample users data
-    const sampleUsers = [
+    const userData = [
       {
         name: "John Smith",
         email: "john@example.com",
@@ -185,8 +309,7 @@ const seedData = async () => {
       }
     ];
 
-    // Add users to database
-    for (const user of sampleUsers) {
+    for (const user of userData) {
       const result = await db.addUser(user);
       if (result.success) {
         console.log(`✅ Added user: ${user.name}`);
@@ -195,7 +318,7 @@ const seedData = async () => {
       }
     }
 
-    console.log('🎉 Seeding completed!');
+    console.log('🎉 Database initialized successfully');
     return { success: true, message: 'Sample data added successfully' };
 
   } catch (error) {

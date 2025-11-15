@@ -1,14 +1,124 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Heart, Users, TrendingUp, CheckCircle, MapPin, DollarSign } from 'lucide-react';
+import { ArrowRight, Heart, Users, TrendingUp, CheckCircle, MapPin, Banknote, BarChart3, FileText, Package, Calendar, Award } from 'lucide-react';
 import { useCampaigns } from '../contexts/CampaignContext';
+import { useAuth } from '../contexts/AuthContext';
+import { Line, Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
+
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 const Home = () => {
   const { campaigns, loading } = useCampaigns();
+  const { user } = useAuth();
   const featuredCampaigns = campaigns.slice(0, 3);
   const [selectedState, setSelectedState] = React.useState(null);
+  const [selectedPeriod, setSelectedPeriod] = React.useState(6);
 
-  // Poverty data
+  const analyticsData = {
+    summary: {
+      totalDonations: 2500000,
+      totalPurchases: 1800000,
+      activeProjects: 12
+    },
+    monthlyData: [
+      { month: 'Jan 2024', spending: 120000, donations: 180000 },
+      { month: 'Feb 2024', spending: 150000, donations: 200000 },
+      { month: 'Mar 2024', spending: 180000, donations: 220000 },
+      { month: 'Apr 2024', spending: 140000, donations: 190000 },
+      { month: 'May 2024', spending: 200000, donations: 250000 },
+      { month: 'Jun 2024', spending: 160000, donations: 210000 },
+      { month: 'Jul 2024', spending: 190000, donations: 240000 },
+      { month: 'Aug 2024', spending: 220000, donations: 280000 },
+      { month: 'Sep 2024', spending: 170000, donations: 230000 },
+      { month: 'Oct 2024', spending: 210000, donations: 260000 },
+      { month: 'Nov 2024', spending: 180000, donations: 220000 },
+      { month: 'Dec 2024', spending: 230000, donations: 300000 }
+    ]
+  };
+
+  const getFilteredData = (months) => {
+    return analyticsData.monthlyData.slice(-months);
+  };
+
+  const filteredData = getFilteredData(selectedPeriod);
+  const labels = filteredData.map(d => d.month);
+  const spending = filteredData.map(d => d.spending);
+  const donations = filteredData.map(d => d.donations);
+
+  const spendingChartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Monthly Spending',
+        data: spending,
+        borderColor: '#e74c3c',
+        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+        tension: 0.4,
+        fill: true
+      }
+    ]
+  };
+
+  const comparisonChartData = {
+    labels: labels,
+    datasets: [
+      {
+        label: 'Donations Received',
+        data: donations,
+        backgroundColor: '#27ae60'
+      },
+      {
+        label: 'Purchases Made',
+        data: spending,
+        backgroundColor: '#e74c3c'
+      }
+    ]
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function(value) {
+            return '₹' + (value / 1000) + 'k';
+          }
+        }
+      }
+    }
+  };
+
   const povertyData = {
     'Andhra Pradesh': { rate: 9.2, population: 53903393, poor: 4959112 },
     'Arunachal Pradesh': { rate: 34.7, population: 1570458, poor: 544949 },
@@ -48,6 +158,215 @@ const Home = () => {
     if (rate >= 10) return '#fbbf24';
     return '#22c55e';
   };
+
+  if (user && user.userType === 'ngo') {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* NGO Dashboard Header */}
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-4xl font-bold mb-2">Welcome, {user.name}</h1>
+            <p className="text-xl text-purple-100">NGO Dashboard - Manage your impact and transparency</p>
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Active Campaigns</p>
+                  <p className="text-3xl font-bold text-blue-600">{campaigns.length}</p>
+                </div>
+                <div className="p-3 bg-blue-100 rounded-full">
+                  <TrendingUp className="w-8 h-8 text-blue-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Total Raised</p>
+                  <p className="text-3xl font-bold text-green-600">₹2.5M</p>
+                </div>
+                <div className="p-3 bg-green-100 rounded-full">
+                  <Banknote className="w-8 h-8 text-green-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Total Donors</p>
+                  <p className="text-3xl font-bold text-purple-600">1,234</p>
+                </div>
+                <div className="p-3 bg-purple-100 rounded-full">
+                  <Users className="w-8 h-8 text-purple-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Volunteers</p>
+                  <p className="text-3xl font-bold text-orange-600">87</p>
+                </div>
+                <div className="p-3 bg-orange-100 rounded-full">
+                  <Heart className="w-8 h-8 text-orange-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Link
+                to="/create-campaign"
+                className="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+              >
+                <div className="p-3 bg-blue-600 rounded-lg mr-4">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Create Campaign</h3>
+                  <p className="text-sm text-gray-600">Start a new fundraising campaign</p>
+                </div>
+              </Link>
+
+              <Link
+                to="/admin"
+                className="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+              >
+                <div className="p-3 bg-green-600 rounded-lg mr-4">
+                  <BarChart3 className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Admin Panel</h3>
+                  <p className="text-sm text-gray-600">Manage donations & purchases</p>
+                </div>
+              </Link>
+
+              <Link
+                to="/campaigns"
+                className="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+              >
+                <div className="p-3 bg-purple-600 rounded-lg mr-4">
+                  <Package className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">View All Campaigns</h3>
+                  <p className="text-sm text-gray-600">See all your campaigns</p>
+                </div>
+              </Link>
+            </div>
+          </div>
+
+          {/* Financial Transparency Dashboard */}
+          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Financial Transparency</h2>
+              <select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(Number(e.target.value))}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              >
+                <option value={3}>Last 3 Months</option>
+                <option value={6}>Last 6 Months</option>
+                <option value={12}>Last 12 Months</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg">
+                <p className="text-sm text-gray-600 mb-2">Total Donations Received</p>
+                <p className="text-3xl font-bold text-green-600">₹{analyticsData.summary.totalDonations.toLocaleString()}</p>
+              </div>
+              <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-lg">
+                <p className="text-sm text-gray-600 mb-2">Total Purchases Made</p>
+                <p className="text-3xl font-bold text-red-600">₹{analyticsData.summary.totalPurchases.toLocaleString()}</p>
+              </div>
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg">
+                <p className="text-sm text-gray-600 mb-2">Active Projects</p>
+                <p className="text-3xl font-bold text-blue-600">{analyticsData.summary.activeProjects}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Monthly Spending Trend</h3>
+                <div style={{ height: '300px' }}>
+                  <Line data={spendingChartData} options={chartOptions} />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Donations vs Purchases</h3>
+                <div style={{ height: '300px' }}>
+                  <Bar data={comparisonChartData} options={chartOptions} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Campaigns */}
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Your Recent Campaigns</h2>
+              <Link to="/campaigns" className="text-blue-600 hover:text-blue-700 font-semibold">
+                View All
+              </Link>
+            </div>
+            
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {featuredCampaigns.map((campaign) => (
+                  <Link
+                    key={campaign.id}
+                    to={`/campaigns/${campaign.id}`}
+                    className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+                  >
+                    <img
+                      src={campaign.image}
+                      alt={campaign.title}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg text-gray-900 mb-2">{campaign.title}</h3>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Raised</span>
+                          <span className="font-semibold text-green-600">₹{campaign.raised?.toLocaleString() || 0}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Goal</span>
+                          <span className="font-semibold text-gray-900">₹{campaign.goal?.toLocaleString() || 0}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div
+                            className="bg-blue-600 h-2 rounded-full"
+                            style={{ width: `${Math.min((campaign.raised / campaign.goal) * 100, 100)}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -170,10 +489,10 @@ const Home = () => {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">
-                        Raised: <strong>${campaign.raised?.toLocaleString() || 0}</strong>
+                        Raised: <strong>₹{campaign.raised?.toLocaleString() || 0}</strong>
                       </span>
                       <span className="text-gray-600">
-                        Goal: <strong>${campaign.goal?.toLocaleString() || 0}</strong>
+                        Goal: <strong>₹{campaign.goal?.toLocaleString() || 0}</strong>
                       </span>
                     </div>
                   </div>
@@ -185,6 +504,107 @@ const Home = () => {
               <p className="text-gray-600 text-lg">Loading campaigns...</p>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Analytics Dashboard Section */}
+      <div className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="inline-block p-4 bg-blue-100 rounded-full mb-4">
+              <BarChart3 className="w-10 h-10 text-blue-600" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Financial Transparency Dashboard</h2>
+            <p className="text-xl text-gray-600">Track our income and expenditure with complete transparency</p>
+          </div>
+
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+              <div className="text-sm text-gray-600 mb-2">Total Donations Received</div>
+              <div className="text-3xl font-bold text-green-600">
+                ₹{analyticsData.summary.totalDonations.toLocaleString('en-IN')}
+              </div>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+              <div className="text-sm text-gray-600 mb-2">Total Purchases Made</div>
+              <div className="text-3xl font-bold text-red-600">
+                ₹{analyticsData.summary.totalPurchases.toLocaleString('en-IN')}
+              </div>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow">
+              <div className="text-sm text-gray-600 mb-2">Active Projects</div>
+              <div className="text-3xl font-bold text-blue-600">
+                {analyticsData.summary.activeProjects}
+              </div>
+            </div>
+          </div>
+
+          {/* Time Period Selector */}
+          <div className="bg-white rounded-lg shadow-md p-4 mb-8">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="font-semibold text-gray-700">Time Period:</span>
+              <button
+                onClick={() => setSelectedPeriod(3)}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  selectedPeriod === 3
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                3 Months
+              </button>
+              <button
+                onClick={() => setSelectedPeriod(6)}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  selectedPeriod === 6
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                6 Months
+              </button>
+              <button
+                onClick={() => setSelectedPeriod(9)}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  selectedPeriod === 9
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                9 Months
+              </button>
+              <button
+                onClick={() => setSelectedPeriod(12)}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  selectedPeriod === 12
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                1 Year
+              </button>
+            </div>
+          </div>
+
+          {/* Charts Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Monthly Spending Trend */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-bold mb-6 text-gray-900">Monthly Spending Trend</h3>
+              <div style={{ height: '300px' }}>
+                <Line data={spendingChartData} options={chartOptions} />
+              </div>
+            </div>
+
+            {/* Donations vs Spending */}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h3 className="text-xl font-bold mb-6 text-gray-900">Donations vs Spending</h3>
+              <div style={{ height: '300px' }}>
+                <Bar data={comparisonChartData} options={chartOptions} />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
